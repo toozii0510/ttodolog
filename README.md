@@ -30,7 +30,13 @@
 - Docker & Docker Compose
 - Git
 
-### **2️⃣ 프로젝트 클론**
-```sh
-git clone https://github.com/toozii0510/ttodolog.git
-cd ttodolog
+### **2️⃣ 프로젝트 실행**
+
+- Django 실행 시
+cd BE
+source venv/bin/activate  # 가상환경 활성화
+python manage.py runserver
+
+- Flutter 실행 시
+cd FE
+flutter run
