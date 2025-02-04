@@ -1,0 +1,21 @@
+# 환경 설정 파일
+.env
+
+# 가상환경 폴더
+venv/
+__pycache__/
+
+# 데이터베이스 파일
+*.sqlite3
+db.sqlite3
+
+# Django Migrations
+*/migrations/*
+
+# IDE 설정 파일
+.vscode/
+.idea/
+
+# Docker 관련
+*.log
+docker-compose.override.yml
