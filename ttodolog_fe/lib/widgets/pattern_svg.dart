@@ -3,47 +3,45 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:ttodolog_fe/%08viewmodels/pattern_editor_viewmodel.dart';
 
-class PatternSVG extends StatelessWidget {
-  final PatternEditorViewModel viewModel;
 
-  const PatternSVG({super.key, required this.viewModel});
 
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: SvgPicture.string(
-        _generateSVG(),
-        width: 500,
-        height: 500,
-        fit: BoxFit.contain,
-      ),
-    );
-  }
+  /// **📌 SVG 생성 함수 (앞판, 뒷판, 소매)**
+  String _generateSVG(PatternEditorViewModel viewModel, String type) {
+    double chestWidth = viewModel.chestWidth;
+    double totalLength = viewModel.totalLength;
+    double shoulderSlope = viewModel.shoulderSlope;
+    double backNeckDepth = viewModel.backNeckDepth;
+    double frontNeckDepth = viewModel.frontNeckDepth;
+    double armholeDepth = viewModel.armholeDepth;
+    double sideLength = viewModel.sideLength;
+    double neckWidth = viewModel.neckWidth;
+    double shoulderWidth = viewModel.shoulderWidth;
+    double armholeCut = viewModel.armholeCut;
+    double bottomBandHeight = viewModel.bottomBandHeight;
+    double sleeveLength = viewModel.sleeveLength;
+    double sleeveCapHeight = viewModel.sleeveCapHeight;
+    double sleeveWidth = viewModel.sleeveWidth;
+    double wristWidth = viewModel.wristWidth;
+    double sleeveBandHeight = viewModel.sleeveBandHeight;
 
-  String _generateSVG() {
-    // 패턴 데이터를 가져옴
-    double chestWidth = viewModel.template.chestWidth;
-    double totalLength = viewModel.template.totalLength;
-    double shoulderWidth = viewModel.template.shoulderWidth;
-    double armholeDepth = viewModel.template.armholeDepth;
-    double frontNeckDepth = viewModel.template.frontNeckDepth;
-    double sleeveWidth = viewModel.template.sleeveWidth;
-    double bottomBandHeight = viewModel.template.bottomBandHeight;
+    double centerX = chestWidth / 2;
 
-    // ✅ 1. 중심 십자가 (도안의 중심 표시용)
-    double centerX = 150;
-    double centerY = totalLength / 2;
+    // ✅ 목, 어깨, 가슴, 옆선 좌표 계산
+    double leftNeckX = centerX - (neckWidth / 2);
+    double rightNeckX = centerX + (neckWidth / 2);
+    double shoulderY = armholeDepth + shoulderSlope;
+    double armholeCurveStartY = armholeDepth / 3;
+    double sideY = -sideLength;
+    double bottomY = -(sideLength + bottomBandHeight);
 
-    // ✅ 2. 밑단 & 고무단
-    double bottomY = totalLength;
-    double bottomBandY = bottomY + bottomBandHeight;
-    double leftBottomX = centerX - (chestWidth / 2);
-    double rightBottomX = centerX + (chestWidth / 2);
-
-    // ✅ 3. 진동 끝점
-    double leftArmholeX = leftBottomX + (chestWidth - shoulderWidth) / 2;
-    double rightArmholeX = rightBottomX - (chestWidth - shoulderWidth) / 2;
-    double armholeY = bottomY - armholeDepth;
+    // ✅ 소매 좌표
+    double leftSleeveX = 0;
+    double leftSleeveBottomX = (sleeveWidth - wristWidth) / 2;
+    double rightSleeveX = sleeveWidth;
+    double rightSleeveBottomX = sleeveWidth - leftSleeveBottomX;
+    double sleeveTopY = sleeveCapHeight;
+    double sleeveBottomY = -(sleeveLength - sleeveCapHeight);
+    double sleeveBandY = -(sleeveLength - sleeveCapHeight + sleeveBandHeight);
 
     // ✅ 4. 어깨점
     double leftShoulderX = leftArmholeX;
