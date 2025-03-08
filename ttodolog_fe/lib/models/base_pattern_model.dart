@@ -14,6 +14,7 @@ class BasePatternModel {
   double sleeveWidth; // 소매 너비
   double wristWidth; // 손목 너비
   double bottomBandHeight; // 아랫단 고무단 길이
+  double sleeveBandHeight; // 소매 고무단 길이
 
   BasePatternModel({
     required this.shoulderSlope,
@@ -29,6 +30,7 @@ class BasePatternModel {
     required this.sleeveWidth,
     required this.wristWidth,
     required this.bottomBandHeight,
+    required this.sleeveBandHeight,
   });
 
   static BasePatternModel getBasePatternByChestSize(double chestSize) {
@@ -47,6 +49,7 @@ class BasePatternModel {
       sleeveWidth: data["소매 너비"]!,
       wristWidth: data["손목 너비"]!,
       bottomBandHeight: data["아랫단 고무단 길이"]!,
+      sleeveBandHeight: data["아랫단 고무단 길이"]!,
     );
   }
 
@@ -55,7 +58,6 @@ class BasePatternModel {
       {
         "range": [50, 53],
         "values": {
-          "총장": 41,
           "어깨처짐": 0.6,
           "뒷목깊이": 1.2,
           "앞목깊이": 5.4,
@@ -68,13 +70,13 @@ class BasePatternModel {
           "소매 길이": 26.0,
           "소매 너비": 12.1,
           "손목 너비": 6.0,
-          "아랫단 고무단 길이": 3
+          "아랫단 고무단 길이": 3,
+          "소매 고무단 길이": 3
         }
       },
       {
         "range": [54, 57],
         "values": {
-          "총장": 43,
           "어깨처짐": 0.9,
           "뒷목깊이": 1.2,
           "앞목깊이": 5.5,
@@ -87,13 +89,13 @@ class BasePatternModel {
           "소매 길이": 30.0,
           "소매 너비": 12.7,
           "손목 너비": 6.0,
-          "아랫단 고무단 길이": 3
+          "아랫단 고무단 길이": 3,
+          "소매 고무단 길이": 3
         }
       },
       {
         "range": [58, 61],
         "values": {
-          "총장": 45,
           "어깨처짐": 1.2,
           "뒷목깊이": 1.2,
           "앞목깊이": 5.7,
@@ -106,7 +108,8 @@ class BasePatternModel {
           "소매 길이": 34.0,
           "소매 너비": 12.9,
           "손목 너비": 6.5,
-          "아랫단 고무단 길이": 3
+          "아랫단 고무단 길이": 3,
+          "소매 고무단 길이": 3
         }
       },
       {
@@ -125,13 +128,13 @@ class BasePatternModel {
           "소매 길이": 38.0,
           "소매 너비": 13.5,
           "손목 너비": 6.5,
-          "아랫단 고무단 길이": 4
+          "아랫단 고무단 길이": 4,
+          "소매 고무단 길이": 4
         }
       },
       {
         "range": [66, 69],
         "values": {
-          "총장": 50,
           "어깨처짐": 1.8,
           "뒷목깊이": 1.2,
           "앞목깊이": 5.9,
@@ -144,13 +147,13 @@ class BasePatternModel {
           "소매 길이": 42.0,
           "소매 너비": 13.8,
           "손목 너비": 7.0,
-          "아랫단 고무단 길이": 4
+          "아랫단 고무단 길이": 4,
+          "소매 고무단 길이": 4
         }
       },
       {
         "range": [70, 73],
         "values": {
-          "총장": 53,
           "어깨처짐": 2.1,
           "뒷목깊이": 1.8,
           "앞목깊이": 6.6,
@@ -163,13 +166,13 @@ class BasePatternModel {
           "소매 길이": 46.0,
           "소매 너비": 14.4,
           "손목 너비": 7.0,
-          "아랫단 고무단 길이": 4
+          "아랫단 고무단 길이": 4,
+          "소매 고무단 길이": 3
         }
       },
       {
         "range": [74, 79],
         "values": {
-          "총장": 55,
           "어깨처짐": 2.4,
           "뒷목깊이": 1.8,
           "앞목깊이": 6.8,
@@ -182,13 +185,13 @@ class BasePatternModel {
           "소매 길이": 48.0,
           "소매 너비": 15.5,
           "손목 너비": 7.5,
-          "아랫단 고무단 길이": 4
+          "아랫단 고무단 길이": 4,
+          "소매 고무단 길이": 4
         }
       },
       {
         "range": [80, 84],
         "values": {
-          "총장": 56,
           "어깨처짐": 2.4,
           "뒷목깊이": 1.8,
           "앞목깊이": 7.0,
@@ -201,13 +204,13 @@ class BasePatternModel {
           "소매 길이": 51.0,
           "소매 너비": 16.1,
           "손목 너비": 8.0,
-          "아랫단 고무단 길이": 5
+          "아랫단 고무단 길이": 5,
+          "소매 고무단 길이": 4
         }
       },
       {
         "range": [85, 89],
         "values": {
-          "총장": 58,
           "어깨처짐": 2.4,
           "뒷목깊이": 1.8,
           "앞목깊이": 7.3,
@@ -220,13 +223,13 @@ class BasePatternModel {
           "소매 길이": 53.0,
           "소매 너비": 16.7,
           "손목 너비": 8.0,
-          "아랫단 고무단 길이": 5
+          "아랫단 고무단 길이": 5,
+          "소매 고무단 길이": 5
         }
       },
       {
         "range": [90, 94],
         "values": {
-          "총장": 59,
           "어깨처짐": 2.4,
           "뒷목깊이": 1.8,
           "앞목깊이": 7.5,
@@ -239,13 +242,13 @@ class BasePatternModel {
           "소매 길이": 55.0,
           "소매 너비": 17.8,
           "손목 너비": 8.5,
-          "아랫단 고무단 길이": 5
+          "아랫단 고무단 길이": 5,
+          "소매 고무단 길이": 5
         }
       },
       {
         "range": [95, 99],
         "values": {
-          "총장": 60,
           "어깨처짐": 2.4,
           "뒷목깊이": 1.8,
           "앞목깊이": 7.8,
@@ -258,13 +261,13 @@ class BasePatternModel {
           "소매 길이": 56.0,
           "소매 너비": 19.0,
           "손목 너비": 8.5,
-          "아랫단 고무단 길이": 6
+          "아랫단 고무단 길이": 6,
+          "소매 고무단 길이": 6
         }
       },
       {
         "range": [100, 129],
         "values": {
-          "총장": 66,
           "어깨처짐": 2.4,
           "뒷목깊이": 1.8,
           "앞목깊이": 9.1,
@@ -277,17 +280,26 @@ class BasePatternModel {
           "소매 길이": 62.0,
           "소매 너비": 22.4,
           "손목 너비": 9.5,
-          "아랫단 고무단 길이": 6.5
+          "아랫단 고무단 길이": 6.5,
+          "소매 고무단 길이": 6.5
         }
       },
     ];
 
     for (final pattern in patternData) {
-      if (chestSize >= pattern["range"]![0] &&
-          chestSize <= pattern["range"]![1]) {
-        return Map<String, double>.from(pattern["values"]);
+      final List<double> range = [
+        (pattern["range"]![0] as num).toDouble(),
+        (pattern["range"]![1] as num).toDouble()
+      ];
+
+      if (chestSize >= range[0] && chestSize <= range[1]) {
+        return Map<String, double>.from(pattern["values"]
+            .map((key, value) => MapEntry(key, (value as num).toDouble())));
       }
     }
-    return Map<String, double>.from(patternData.last["values"]);
+
+// 마지막 패턴 데이터 반환 (int → double 변환 적용)
+    return Map<String, double>.from(patternData.last["values"]
+        .map((key, value) => MapEntry(key, (value as num).toDouble())));
   }
 }
