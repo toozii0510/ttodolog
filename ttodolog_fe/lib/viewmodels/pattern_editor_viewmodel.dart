@@ -20,38 +20,37 @@ class PatternEditorViewModel extends ChangeNotifier {
   double get wristWidth => template.wristWidth;
 
   // ✅ 조정 불가 (자동 업데이트되는 값)
-  double get totalLength =>
-      template.backNeckDepth + template.sideLength + template.shoulderSlope;
   double get backNeckDepth => template.backNeckDepth; // 고정 값
   double get shoulderSlope => template.shoulderSlope; // 고정 값
   double get armholeCut => (template.chestWidth - template.shoulderWidth) / 2;
   double get sleeveCapHeight => template.sleeveCapHeight; // 자동 계산됨
 
-  void _updateAndNotify(void Function() updateFunction) {
-    updateFunction();
+  // ✅ Setter
+  void _updateAndNotify(void Function() fn) {
+    fn();
     notifyListeners();
   }
 
-  void setFrontNeckDepth(double value) =>
-      _updateAndNotify(() => template.adjustFrontNeckDepth(value));
-  void setArmholeDepth(double value) =>
-      _updateAndNotify(() => template.adjustArmholeDepth(value));
-  void setSideLength(double value) =>
-      _updateAndNotify(() => template.adjustSideLength(value));
-  void setBottomBandHeight(double value) =>
-      _updateAndNotify(() => template.adjustBottomBandHeight(value));
-  void setNeckWidth(double value) =>
-      _updateAndNotify(() => template.adjustNeckWidth(value));
-  void setShoulderWidth(double value) =>
-      _updateAndNotify(() => template.adjustShoulderWidth(value));
-  void setChestWidth(double value) =>
-      _updateAndNotify(() => template.adjustChestWidth(value));
-  void setSleeveLength(double value) =>
-      _updateAndNotify(() => template.adjustSleeveLength(value));
-  void setSleeveBandHeight(double value) =>
-      _updateAndNotify(() => template.adjustSleeveBandHeight(value));
-  void setSleeveWidth(double value) =>
-      _updateAndNotify(() => template.adjustSleeveWidth(value));
-  void setWristWidth(double value) =>
-      _updateAndNotify(() => template.adjustWristWidth(value));
+  void setFrontNeckDepth(double v) =>
+      _updateAndNotify(() => template.adjustFrontNeckDepth(v));
+  void setArmholeDepth(double v) =>
+      _updateAndNotify(() => template.adjustArmholeDepth(v));
+  void setSideLength(double v) =>
+      _updateAndNotify(() => template.adjustSideLength(v));
+  void setBottomBandHeight(double v) =>
+      _updateAndNotify(() => template.adjustBottomBandHeight(v));
+  void setNeckWidth(double v) =>
+      _updateAndNotify(() => template.adjustNeckWidth(v));
+  void setShoulderWidth(double v) =>
+      _updateAndNotify(() => template.adjustShoulderWidth(v));
+  void setChestWidth(double v) =>
+      _updateAndNotify(() => template.adjustChestWidth(v));
+  void setSleeveLength(double v) =>
+      _updateAndNotify(() => template.adjustSleeveLength(v));
+  void setSleeveBandHeight(double v) =>
+      _updateAndNotify(() => template.adjustSleeveBandHeight(v));
+  void setSleeveWidth(double v) =>
+      _updateAndNotify(() => template.adjustSleeveWidth(v));
+  void setWristWidth(double v) =>
+      _updateAndNotify(() => template.adjustWristWidth(v));
 }

@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:ttodolog_fe/%08viewmodels/pattern_editor_viewmodel.dart';
 
 class PatternSVG extends StatelessWidget {
-  final String type;
+  final String type; // "front", "back", "sleeve"
 
   const PatternSVG({super.key, required this.type});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<PatternEditorViewModel>(
-      builder: (context, viewModel, child) {
+      builder: (context, vm, child) {
+        final svgStr = _generateSVG(vm, type);
         return Container(
-          color: Colors.grey.shade200, // 디버깅용 배경색
+          color: Colors.grey.shade200,
           child: SvgPicture.string(
-            _generateSVG(viewModel, type),
+            svgStr,
             width: double.infinity,
             height: double.infinity,
             fit: BoxFit.contain,
@@ -24,118 +25,160 @@ class PatternSVG extends StatelessWidget {
       },
     );
   }
+}
 
-  String _generateSVG(PatternEditorViewModel viewModel, String type) {
-    double baseY = 20.0;
-    double centerX = 120.0;
-
-    switch (type) {
-      case "front":
-        return _generateBodySVG(viewModel, centerX, baseY, isFront: true);
-      case "back":
-        return _generateBodySVG(viewModel, centerX, baseY, isFront: false);
-      case "sleeve":
-        return _generateSleeveSVG(viewModel);
-      default:
-        return "";
-    }
+/// **type**별로 다른 Path 생성
+String _generateSVG(PatternEditorViewModel vm, String type) {
+  switch (type) {
+    case "front":
+      return _generateBodySVG(vm, isFront: true);
+    case "back":
+      return _generateBodySVG(vm, isFront: false);
+    case "sleeve":
+      return _generateSleeveSVG(vm);
+    default:
+      return '';
   }
+}
 
-  /// **✅ 앞판 & 뒷판 (Body) SVG 생성 (중앙 대칭 활용)**
-  String _generateBodySVG(
-      PatternEditorViewModel viewModel, double centerX, double baseY,
-      {required bool isFront}) {
-    double neckLeft = centerX - (viewModel.neckWidth / 2);
-    double neckRight = centerX + (viewModel.neckWidth / 2);
-    double shoulderLeft = centerX - (viewModel.shoulderWidth / 2);
-    double shoulderRight = centerX + (viewModel.shoulderWidth / 2);
+// ----------------------------------------------------------------
+// (1) 몸판 (앞/뒤)
+// ----------------------------------------------------------------
+String _generateBodySVG(PatternEditorViewModel vm, {required bool isFront}) {
+  // (A) centerX, baseY를 임의로 설정 (도안의 기준점)
+  //     필요하다면, 외부 파라미터로 받아도 됨.
+  const double centerX = 50.0;
+  const double baseY = 4.0;
 
-    double neckHeight = baseY;
-    double shoulderHeight = baseY + (viewModel.shoulderSlope);
-    double armholeHeight =
-        baseY + (viewModel.shoulderSlope + viewModel.armholeDepth);
-    double armholeCurveHeight = baseY +
-        (viewModel.shoulderSlope +
-            viewModel.armholeDepth * (isFront ? 2 / 3 : 1 / 2));
+  // **사용자 원본 코드**에서 썼던 변수들
+  double neckLeft = centerX - (vm.neckWidth / 2);
+  double neckRight = centerX + (vm.neckWidth / 2);
+  double shoulderLeft = centerX - (vm.shoulderWidth / 2);
+  double shoulderRight = centerX + (vm.shoulderWidth / 2);
 
-    double hemHeight = baseY +
-        (viewModel.shoulderSlope +
-            viewModel.armholeDepth +
-            viewModel.sideLength);
-    double chestStart = centerX - (viewModel.chestWidth / 2);
-    double chestEnd = centerX + (viewModel.chestWidth / 2);
-    double neckCurveDepth =
-        baseY + (isFront ? viewModel.frontNeckDepth : viewModel.backNeckDepth);
-    double bandHeight = baseY +
-        (viewModel.shoulderSlope +
-            viewModel.armholeDepth +
-            viewModel.sideLength +
-            viewModel.bottomBandHeight);
+  double neckHeight = baseY;
+  double shoulderHeight = baseY + vm.shoulderSlope;
 
-    return '''
-    <svg width="600" height="600" viewBox="0 0 1200 1000" xmlns="http://www.w3.org/2000/svg">
-      <g transform="translate(-800,0),scale(10)">
-        <rect x="0" y="0" width="1200" height="1000" fill="rgba(255, 0, 0, 0.2)" />
-        <path d="
-          M $neckLeft,$neckHeight 
-          Q $centerX,$neckCurveDepth $neckRight,$neckHeight
-          L $shoulderRight,$shoulderHeight
-          L $shoulderRight,$armholeCurveHeight    
-          L $shoulderRight,$armholeHeight       
-          L $chestEnd,$armholeHeight         
-          L $chestEnd,$hemHeight
-          L $chestStart,$hemHeight
-          L $chestStart,$armholeHeight
-          L $shoulderLeft,$armholeHeight
-          L $shoulderLeft,$armholeCurveHeight   
-          L $shoulderLeft,$shoulderHeight
-          Z"
-          stroke="black" fill="none" stroke-width="1"/>
-      </g>
-    </svg>
-    ''';
-  }
+  double armholeHeight = baseY + (vm.shoulderSlope + vm.armholeDepth);
 
-  String _generateSleeveSVG(PatternEditorViewModel viewModel) {
-    double baseY = 20.0;
+  // 암홀 곡선을 살짝 만들고 싶다면, 중간 지점(armholeCurveHeight) 설정 가능
+  // 예: 앞판이면 2/3, 뒷판이면 1/2
+  double armholeCurveHeight =
+      baseY + vm.shoulderSlope + vm.armholeDepth * (isFront ? 2.0 / 3.0 : 0.5);
 
-    double centerX = 120; //중앙 X 좌표
-    double scL1 = centerX - (viewModel.sleeveWidth / 3); //왼쪽 제어점 1
-    double scR1 = centerX + (viewModel.sleeveWidth / 3); //오른쪽 제어점 1
-    double scL2 = centerX - (viewModel.sleeveWidth - 3); //왼쪽 제어점 2
-    double scR2 = centerX + (viewModel.sleeveWidth - 3);
-    double swL = centerX - (viewModel.sleeveWidth); // 소매너비
-    double swR = centerX + (viewModel.sleeveWidth);
-    double wristLeft = centerX - (viewModel.wristWidth); //손목 너비
-    double wristRight = centerX + (viewModel.wristWidth);
+  double hemHeight =
+      baseY + (vm.shoulderSlope + vm.armholeDepth + vm.sideLength);
 
-    double sleeveTop = baseY; //소매 최상단 높이
-    double sleeveCapHeight = baseY + viewModel.sleeveCapHeight; // 소매산 높이
-    double sleeveHeight = baseY + viewModel.sleeveLength; // 소매 길이
-    double sleeveBottom = baseY +
-        (viewModel.sleeveLength + viewModel.sleeveBandHeight); //소매 고무단 길이
+  double chestStart = centerX - (vm.chestWidth / 2);
+  double chestEnd = centerX + (vm.chestWidth / 2);
 
-    return '''
-  <svg width="600" height="600" viewBox="0 0 1200 1000" xmlns="http://www.w3.org/2000/svg">
-      <g transform="translate(-800,0),scale(10)">
-      <rect x="0" y="0" width="1200" height="1000" fill="rgba(255, 0, 0, 0.2)" />
-        <path d="M $scL1,$sleeveTop
-                L $centerX,$sleeveTop        
-                L $scR1,$sleeveTop
-                L $scR2,$sleeveCapHeight
-                L $swR,$sleeveCapHeight 
-                L $wristRight,$sleeveHeight
-                L $wristRight,$sleeveBottom 
-                L $wristLeft,$sleeveBottom 
-                L $wristLeft,$sleeveHeight
-                L $swL,$sleeveCapHeight
-                L $scL2,$sleeveCapHeight
-                L $scL1,$sleeveTop
+  // 네크라인 곡선 깊이
+  double neckCurveDepth =
+      baseY + (isFront ? vm.frontNeckDepth : vm.backNeckDepth);
 
-                Z"
-              stroke="black" fill="none" stroke-width="1"/>
-      </g>
-    </svg>
-    ''';
-  }
+  // 아래 고무단 높이 (bandHeight)는 추가로 사용 가능
+  double bandHeight = baseY +
+      (vm.shoulderSlope +
+          vm.armholeDepth +
+          vm.sideLength +
+          vm.bottomBandHeight);
+
+  // ------------------------------------------
+  // SVG Header
+  const svgHeader = '''
+<svg width="600" height="600" viewBox="0 0 1200 1000" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(100,100) scale(10)">
+    <!-- 디버그용 배경 -->
+    <rect x="-20" y="-20" width="600" height="800" fill="rgba(255,0,0,0.05)" />
+''';
+
+  // ------------------------------------------
+  // Path 설명:
+  //
+  // 1) (neckLeft, neckHeight) → (neckRight, neckHeight)을
+  //    Q(Quadratic Bézier)로 그려서 **네크라인** 좌우 대칭
+  //    Control Point = (centerX, neckCurveDepth)
+  //
+  // 2) 어깨선 → (shoulderRight, shoulderHeight)
+  // 3) 암홀 곡선 부분:
+  //    - (shoulderRight, armholeCurveHeight) / (shoulderRight, armholeHeight)
+  //    - (chestEnd, armholeHeight)
+  //
+  // 4) 옆선 + 밑단:
+  //    - (chestEnd, hemHeight) → (chestStart, hemHeight)
+  //
+  // 5) 암홀 왼쪽, 어깨 왼쪽:
+  //    - (chestStart, armholeHeight) → (shoulderLeft, armholeHeight) → ...
+  //
+  // 닫기(Z)
+  //
+  // ※ 필요하면 여기서 특정 구간을 Cubic Bézier로 바꿔 더 부드럽게 만들 수도 있음.
+
+  final path = '''
+<path d="
+  M $neckLeft,$neckHeight
+  Q $centerX,$neckCurveDepth $neckRight,$neckHeight
+
+  L $shoulderRight,$shoulderHeight
+  L $shoulderRight,$armholeCurveHeight
+  L $shoulderRight,$armholeHeight
+  L $chestEnd,$armholeHeight
+  L $chestEnd,$hemHeight
+  L $chestStart,$hemHeight
+  L $chestStart,$armholeHeight
+  L $shoulderLeft,$armholeHeight
+  L $shoulderLeft,$armholeCurveHeight
+  L $shoulderLeft,$shoulderHeight
+  Z
+"
+fill="none" stroke="${isFront ? 'blue' : 'red'}" stroke-width="1" />
+''';
+
+  const svgFooter = '''
+  </g>
+</svg>
+''';
+
+  return svgHeader + path + svgFooter;
+}
+
+// ----------------------------------------------------------------
+// (2) 소매 (보다 정교한 소매산)
+// ----------------------------------------------------------------
+String _generateSleeveSVG(PatternEditorViewModel vm) {
+  // 예: 소매 길이, 너비, 소매산 높이, 손목 너비
+  final double sLen = vm.sleeveLength;
+  final double sWidth = vm.sleeveWidth;
+  final double capH = vm.sleeveCapHeight;
+  final double wristW = vm.wristWidth;
+
+  const svgHeader = '''
+<svg width="600" height="600" viewBox="0 0 1200 1000" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(100,100) scale()">
+    <rect x="-20" y="-20" width="600" height="800" fill="rgba(0,255,0,0.05)" />
+''';
+
+  // 소매산을 Cubic Bézier로 표현
+  final cp1x = sWidth * 0.3;
+  final cp1y = -capH;
+  final cp2x = sWidth * 0.7;
+  final cp2y = -capH;
+
+  final path = '''
+<path d="
+  M 0,0
+  C $cp1x,$cp1y $cp2x,$cp2y $sWidth,0
+  L $wristW,$sLen
+  L 0,$sLen
+  Z
+"
+fill="none" stroke="green" stroke-width="1" />
+''';
+
+  const svgFooter = '''
+  </g>
+</svg>
+''';
+
+  return svgHeader + path + svgFooter;
 }

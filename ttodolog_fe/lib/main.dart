@@ -1,31 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:ttodolog_fe/%08viewmodels/pattern_editor_viewmodel.dart';
-import 'package:ttodolog_fe/models/bottomup_template.dart';
-import 'package:ttodolog_fe/models/base_pattern_model.dart';
-import 'package:ttodolog_fe/views/pattern_editor_screen.dart';
+import 'viewmodels/template_viewmodel.dart';
+import 'views/app_routes.dart';
 
 void main() {
-  // ✅ 기본 패턴 데이터 생성
-  double initialChestCircumference = 90; // 기본 가슴둘레 설정
-
-  BasePatternModel basePattern =
-      BasePatternModel.getBasePatternByChestSize(initialChestCircumference);
-  BottomUpTemplate template = BottomUpTemplate(
-    basePattern: basePattern,
-    chestCircumference: initialChestCircumference,
-  );
-
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => PatternEditorViewModel(template: template),
-        ),
-      ],
-      child: const MyApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -33,13 +12,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return MultiProvider(
+      providers: [
+        // TemplateViewModel: 템플릿 생성 & 기본 치수 관리
+        ChangeNotifierProvider(create: (_) => TemplateViewModel()),
+      ],
+      child: MaterialApp(
+        title: 'Ttodolog Demo',
+        theme: ThemeData(primarySwatch: Colors.blue),
+        initialRoute: AppRoutes.templateInput,
+        onGenerateRoute: AppRoutes.generateRoute,
       ),
-      home: const PatternEditorScreen(),
     );
   }
 }
