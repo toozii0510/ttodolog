@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'viewmodels/template_viewmodel.dart';
-import 'views/app_routes.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'router/app_router.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -12,17 +11,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        // TemplateViewModel: 템플릿 생성 & 기본 치수 관리
-        ChangeNotifierProvider(create: (_) => TemplateViewModel()),
-      ],
-      child: MaterialApp(
-        title: 'Ttodolog Demo',
-        theme: ThemeData(primarySwatch: Colors.blue),
-        initialRoute: AppRoutes.templateInput,
-        onGenerateRoute: AppRoutes.generateRoute,
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      title: 'TTodolog',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      routerConfig: appRouter,
     );
   }
 }

@@ -1,6 +1,6 @@
 //기본 원형 모델(하드코딩)
 
-class BasePatternModel {
+class BasicBodyShapeModel {
   double shoulderSlope; // 어깨처짐
   double backNeckDepth; // 뒷목깊이
   double frontNeckDepth; // 앞목깊이
@@ -16,7 +16,7 @@ class BasePatternModel {
   double bottomBandHeight; // 아랫단 고무단 길이
   double sleeveBandHeight; // 소매 고무단 길이
 
-  BasePatternModel({
+  BasicBodyShapeModel({
     required this.shoulderSlope,
     required this.backNeckDepth,
     required this.frontNeckDepth,
@@ -33,9 +33,9 @@ class BasePatternModel {
     required this.sleeveBandHeight,
   });
 
-  static BasePatternModel getBasePatternByChestSize(double chestSize) {
+  static BasicBodyShapeModel getMatchingBodyShape(double chestSize) {
     final data = _basePatternData(chestSize);
-    return BasePatternModel(
+    return BasicBodyShapeModel(
       shoulderSlope: data["어깨처짐"]!,
       backNeckDepth: data["뒷목깊이"]!,
       frontNeckDepth: data["앞목깊이"]!,
