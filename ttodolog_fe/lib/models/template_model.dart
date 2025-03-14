@@ -4,21 +4,23 @@ class TemplateModel {
   final String knittingMethod; // "top_down" 또는 "bottom_up"
   final String category; // "knit" 또는 "cardigan"
   final String fitType; // "slim_fit" 또는 "regular_fit"
-  final double chestCircumference;
-  final double shoulderSlope;
-  final double backNeckDepth;
-  final double frontNeckDepth;
-  final double armholeDepth;
-  final double sideLength;
-  final double neckWidth;
-  final double shoulderWidth;
-  final double chestWidth;
-  final double sleeveCapHeight;
-  final double sleeveLength;
-  final double sleeveWidth;
-  final double wristWidth;
-  final double bottomBandHeight;
-  final double sleeveBandHeight;
+
+  final double chestCircumference; // 가슴둘레
+  final double shoulderSlope; // 어깨처짐
+  final double backNeckDepth; // 뒷목깊이
+  final double frontNeckDepth; // 앞목깊이
+  final double armholeDepth; // 진동길이
+  final double sideLength; // 옆선길이
+  final double neckWidth; // 목너비
+  final double shoulderWidth; // 어깨너비
+  final double chestWidth; // 가슴너비
+  final double sleeveCapHeight; // 소매산높이
+  final double sleeveLength; // 소매길이
+  final double sleeveWidth; // 소매너비
+  final double wristWidth; // 손목너비
+  final double bottomBandHeight; // 밑단밴드높이
+  final double sleeveBandHeight; // 소매밴드높이
+  final double neckBandHeight; // 넥밴드높이
 
   TemplateModel({
     required this.knittingMethod,
@@ -39,25 +41,27 @@ class TemplateModel {
     required this.wristWidth,
     required this.bottomBandHeight,
     required this.sleeveBandHeight,
+    required this.neckBandHeight,
   });
 
   Map<String, double> toJson() {
     return {
+      "chestCircumference": chestCircumference,
+      "shoulderSlope": shoulderSlope,
+      "backNeckDepth": backNeckDepth,
       "frontNeckDepth": frontNeckDepth,
       "armholeDepth": armholeDepth,
       "sideLength": sideLength,
-      "bottomBandHeight": bottomBandHeight,
       "neckWidth": neckWidth,
       "shoulderWidth": shoulderWidth,
       "chestWidth": chestWidth,
       "sleeveLength": sleeveLength,
-      "sleeveBandHeight": sleeveBandHeight,
       "sleeveWidth": sleeveWidth,
       "wristWidth": wristWidth,
-      "shoulderSlope": shoulderSlope,
-      "backNeckDepth": backNeckDepth,
-      "chestCircumference": chestCircumference,
       "sleeveCapHeight": sleeveCapHeight,
+      "bottomBandHeight": bottomBandHeight,
+      "sleeveBandHeight": sleeveBandHeight,
+      "neckBandHeight": neckBandHeight,
     };
   }
 
@@ -77,6 +81,7 @@ class TemplateModel {
     double? wristWidth,
     double? bottomBandHeight,
     double? sleeveBandHeight,
+    double? neckBandHeight,
   }) {
     return TemplateModel(
       knittingMethod: knittingMethod,
@@ -97,6 +102,7 @@ class TemplateModel {
       wristWidth: wristWidth ?? this.wristWidth,
       bottomBandHeight: bottomBandHeight ?? this.bottomBandHeight,
       sleeveBandHeight: sleeveBandHeight ?? this.sleeveBandHeight,
+      neckBandHeight: neckBandHeight ?? this.neckBandHeight,
     );
   }
 
@@ -114,19 +120,20 @@ class TemplateModel {
       // ✅ 핏에 따른 여유분 적용 (뜨는 방식, 카테고리는 레이아웃에만 영향)
       shoulderSlope: base.shoulderSlope * easeValues['shoulderSlope']!,
       backNeckDepth: base.backNeckDepth * easeValues['backNeckDepth']!,
-      frontNeckDepth: (base.neckWidth / 6) +
-          base.backNeckDepth * easeValues['frontNeckDepth']!,
+      frontNeckDepth: (base.neckCircumference / 6) +
+          base.backNeckDepth * easeValues['backNeckDepth']!,
       armholeDepth: base.armholeDepth + easeValues['armholeDepth']!,
-      sideLength: base.sideLength, // 변동 없음
-      neckWidth: ((base.neckWidth / 6) + easeValues['neckWidth']!) * 2,
+      sideLength: base.backLength - base.armholeDepth + 12,
+      neckWidth: ((base.neckCircumference / 6) + easeValues['neckWidth']!) * 2,
       shoulderWidth: base.shoulderWidth - easeValues['shoulderWidth']!,
       chestWidth: (chestCircumference / 2) + easeValues['chestWidth']!,
       sleeveCapHeight: (base.armholeDepth / 2),
-      sleeveLength: base.sleeveLength + easeValues['sleeveLength']!,
-      sleeveWidth: (base.sleeveWidth / 2 * easeValues['sleeveWidth']!),
-      wristWidth: base.wristWidth / 2,
-      bottomBandHeight: base.bottomBandHeight,
-      sleeveBandHeight: base.sleeveBandHeight,
+      sleeveLength: base.armLength + easeValues['sleeveLength']!,
+      sleeveWidth: (base.armCircumference / 2 * easeValues['sleeveWidth']!),
+      wristWidth: base.wristCircumference / 2,
+      bottomBandHeight: base.backNeckDepth + 2,
+      sleeveBandHeight: base.backNeckDepth + 2,
+      neckBandHeight: (base.backNeckDepth + 3) / 2,
     );
   }
 
@@ -134,19 +141,18 @@ class TemplateModel {
   static Map<String, double> _getEaseValuesByFit(String fitType) {
     if (fitType == "regular_fit") {
       return {
-        "shoulderSlope": 0.4,
+        "shoulderSlope": 0.6,
         "backNeckDepth": 1.2,
-        "frontNeckDepth": 1.0,
-        "armholeDepth": 2.0,
+        "armholeDepth": 1.0,
         "neckWidth": 3.5,
         "shoulderWidth": 2.0,
-        "chestWidth": 4.0,
+        "chestWidth": 6.0,
         "sleeveLength": 2.0,
         "sleeveWidth": 1.15
       };
     } else if (fitType == "slim_fit") {
       return {
-        "shoulderSlope": 0.4,
+        "shoulderSlope": 0.6,
         "backNeckDepth": 1.1,
         "frontNeckDepth": 1.0,
         "armholeDepth": 1.5,
@@ -156,17 +162,18 @@ class TemplateModel {
         "sleeveLength": 1.5,
         "sleeveWidth": 1.1
       };
+    } else {
+      return {
+        "shoulderSlope": 0.0,
+        "backNeckDepth": 0.0,
+        "frontNeckDepth": 0.0,
+        "armholeDepth": 0.0,
+        "neckWidth": 0.0,
+        "shoulderWidth": 0.0,
+        "chestWidth": 0.0,
+        "sleeveLength": 0.0,
+        "sleeveWidth": 0.0
+      };
     }
-    return {
-      "shoulderSlope": 0.4,
-      "backNeckDepth": 1.2,
-      "frontNeckDepth": 1.0,
-      "armholeDepth": 2.0,
-      "neckWidth": 3.5,
-      "shoulderWidth": 2.0,
-      "chestWidth": 4.0,
-      "sleeveLength": 2.0,
-      "sleeveWidth": 1.15
-    };
   }
 }

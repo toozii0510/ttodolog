@@ -35,6 +35,7 @@ class TemplateProvider extends StateNotifier<TemplateModel?> {
       wristWidth: 0.0,
       bottomBandHeight: 0.0,
       sleeveBandHeight: 0.0,
+      neckBandHeight: 0.0,
     );
   }
 
