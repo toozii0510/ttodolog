@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ttodolog_fe/%08viewmodels/measurement_viewmodel.dart';
 import 'package:ttodolog_fe/%08viewmodels/template_provider.dart';
 import 'package:ttodolog_fe/widgets/measurement_slider.dart';
@@ -18,13 +19,13 @@ class MeasurementAdjustScreen extends ConsumerWidget {
       );
     }
 
-    final measurementVM = ref.watch(measurementViewModelProvider);
+    final measurementVM = ref.watch(measurementViewModelProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(title: const Text("세부 치수 조정")),
-      body: const Column(
+      body: Column(
         children: [
-          Expanded(
+          const Expanded(
             flex: 3,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -35,7 +36,7 @@ class MeasurementAdjustScreen extends ConsumerWidget {
               ],
             ),
           ),
-          Expanded(
+          const Expanded(
             flex: 2,
             child: SingleChildScrollView(
               child: Padding(
@@ -44,6 +45,28 @@ class MeasurementAdjustScreen extends ConsumerWidget {
               ),
             ),
           ),
+          Center(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                textStyle: const TextStyle(fontSize: 16),
+              ),
+              onPressed: () {
+                measurementVM.applyChanges(measurementVM.state.toJson().map(
+                    (key, value) => MapEntry(key, (value as num).toDouble())));
+
+                /// **🚀 선택한 템플릿의 방식(top_down or bottom_up)에 따라 화면 이동**
+                if (template.knittingMethod == "top_down") {
+                  context.go('/top_down_layout');
+                } else {
+                  context.go('/bottom_up_layout');
+                }
+              },
+              child: const Text("도안 생성하기"),
+            ),
+          ),
+          const SizedBox(height: 20),
         ],
       ),
     );

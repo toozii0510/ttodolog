@@ -66,7 +66,10 @@ class MeasurementViewModel extends StateNotifier<TemplateModel> {
     );
   }
 
-  void applyChanges(Map<String, double> newValues) {
+  void applyChanges(Map<String, dynamic> newValues) {
+    final updatedValues =
+        newValues.map((key, value) => MapEntry(key, (value as num).toDouble()));
+
     state = state.copyWith(
       frontNeckDepth: newValues["frontNeckDepth"] ?? state.frontNeckDepth,
       armholeDepth: newValues["armholeDepth"] ?? state.armholeDepth,
